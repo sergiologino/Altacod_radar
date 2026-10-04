@@ -1,7 +1,9 @@
-import { render, screen, within } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { cleanup, render, screen, within } from '@testing-library/react'
+import { afterEach, describe, expect, it } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
 import { HomePage } from './HomePage'
+
+afterEach(cleanup)
 
 describe('главная страница', () => {
   it('содержит все секции для внутренних ссылок и рабочий email-контакт', () => {
