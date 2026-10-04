@@ -23,6 +23,7 @@ function form(contact = 'anna@example.com') {
   data.set('process', 'Переносим заказы вручную')
   data.set('systems', '1С, CRM')
   data.set('goal', 'Передавать автоматически')
+  data.set('website', '')
   return data
 }
 
@@ -47,6 +48,15 @@ test('отправляет письмо от noreply на info, адрес по�
   assert.equal(sent[0].attachments[0].content.toString(), 'пример')
 })
 
+test('принимает форму без выбранного необязательного файла', async () => {
+  const data = form()
+  data.set('attachment', new File([], '', { type: 'application/octet-stream' }))
+  const response = await fetch(`${base}/api/contact`, { method: 'POST', body: data })
+  assert.equal(response.status, 200)
+  assert.deepEqual(await response.json(), { ok: true })
+  assert.deepEqual(sent.at(-1).attachments, [])
+})
+
 test('не отправляет обращение с ошибочным адресом или неподдерживаемым файлом', async () => {
   const badEmail = await fetch(`${base}/api/contact`, { method: 'POST', body: form('не почта') })
   assert.equal(badEmail.status, 400)
@@ -54,7 +64,7 @@ test('не отправляет обращение с ошибочным адр�
   data.set('attachment', new File(['<svg/>'], 'image.svg', { type: 'image/svg+xml' }))
   const badFile = await fetch(`${base}/api/contact`, { method: 'POST', body: data })
   assert.equal(badFile.status, 400)
-  assert.equal(sent.length, 1)
+  assert.equal(sent.length, 2)
 })
 
 test('отклоняет вложение больше 10 МБ', async () => {
@@ -62,7 +72,7 @@ test('отклоняет вложение больше 10 МБ', async () => {
   data.set('attachment', new File([new Uint8Array(10 * 1024 * 1024 + 1)], 'large.pdf', { type: 'application/pdf' }))
   const response = await fetch(`${base}/api/contact`, { method: 'POST', body: data })
   assert.equal(response.status, 413)
-  assert.equal(sent.length, 1)
+  assert.equal(sent.length, 2)
 })
 
 test('не выдаёт успех при ошибке SMTP', async () => {

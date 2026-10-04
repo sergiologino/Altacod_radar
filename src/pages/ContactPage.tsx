@@ -3,34 +3,57 @@ import { ArrowUpRight, Mail } from 'lucide-react'
 import { Footer } from '../components/Footer'
 import { Header } from '../components/Header'
 import { Breadcrumbs } from '../components/Breadcrumbs'
-import { createLeadMailto, type LeadDraft } from '../lib/contact'
 
 const systemOptions = ['1С', 'Excel', 'CRM', 'Сайт', 'Маркетплейсы', 'Другое']
+const maxFileBytes = 10 * 1024 * 1024
 
 export function ContactPage() {
   const [systems, setSystems] = useState<string[]>([])
-  const [draftUrl, setDraftUrl] = useState('')
   const [fileName, setFileName] = useState('')
+  const [sending, setSending] = useState(false)
+  const [sent, setSent] = useState(false)
+  const [error, setError] = useState('')
 
   function toggleSystem(system: string) {
     setSystems((current) =>
       current.includes(system) ? current.filter((item) => item !== system) : [...current, system],
     )
-    setDraftUrl('')
+    setSent(false)
+    setError('')
   }
 
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    const data = new FormData(event.currentTarget)
-    const draft: LeadDraft = {
-      name: String(data.get('name') || ''),
-      company: String(data.get('company') || ''),
-      contact: String(data.get('contact') || ''),
-      process: String(data.get('process') || ''),
-      systems,
-      goal: String(data.get('goal') || ''),
+    const form = event.currentTarget
+    const data = new FormData(form)
+    const file = data.get('attachment')
+    if (file instanceof File && file.size > maxFileBytes) {
+      setError('Файл больше 10 МБ. Выберите файл поменьше.')
+      return
     }
-    setDraftUrl(createLeadMailto(draft))
+    data.set('systems', systems.join(', '))
+    setSending(true)
+    setError('')
+    setSent(false)
+    try {
+      const response = await fetch('/api/contact', { method: 'POST', body: data })
+      if (!response.ok) {
+        const result = (await response.json().catch(() => null)) as { error?: string } | null
+        throw new Error(result?.error || 'Не удалось отправить обращение. Попробуйте позже.')
+      }
+      setSent(true)
+      setFileName('')
+      setSystems([])
+      form.reset()
+    } catch (cause) {
+      setError(
+        cause instanceof Error
+          ? cause.message
+          : 'Не удалось отправить обращение. Попробуйте позже.',
+      )
+    } finally {
+      setSending(false)
+    }
   }
 
   return (
@@ -80,13 +103,20 @@ export function ContactPage() {
                 <span />
                 ОПИСАТЬ ЗАДАЧУ
               </span>
-              <h2>Соберите письмо за пару минут</h2>
+              <h2>Расскажите о задаче</h2>
               <p>
-                Поля ниже сформируют черновик письма в вашей почтовой программе. Сообщение
-                отправится только после вашего подтверждения.
+                Заполните форму — сообщение и приложенный файл придут нам на почту. Мы ответим на
+                указанный адрес.
               </p>
             </div>
-            <form className="lead-form" onSubmit={onSubmit} onChange={() => setDraftUrl('')}>
+            <form
+              className="lead-form"
+              onSubmit={onSubmit}
+              onChange={() => {
+                setSent(false)
+                setError('')
+              }}
+            >
               <div className="lead-row">
                 <label>
                   Ваше имя <input name="name" required autoComplete="name" />
@@ -97,11 +127,12 @@ export function ContactPage() {
                 </label>
               </div>
               <label>
-                Как с вами связаться{' '}
+                Почта для ответа{' '}
                 <input
                   name="contact"
+                  type="email"
                   required
-                  placeholder="Почта или телефон"
+                  placeholder="name@example.com"
                   autoComplete="email"
                 />
               </label>
@@ -142,26 +173,34 @@ export function ContactPage() {
                 Файл с примером <span className="field-optional">необязательно</span>
                 <input
                   type="file"
+                  name="attachment"
+                  accept=".jpg,.jpeg,.png,.pdf,.txt,.csv,.docx,.xlsx"
                   onChange={(event) => setFileName(event.target.files?.[0]?.name || '')}
                 />
               </label>
               {fileName && (
                 <p className="lead-file-note">
-                  Файл «{fileName}» нужно будет приложить к письму вручную. Сайт не загружает его на
-                  сервер.
+                  Файл «{fileName}» приложится к обращению. Максимальный размер — 10 МБ.
                 </p>
               )}
-              <button className="button button--primary" type="submit">
-                Подготовить письмо <ArrowUpRight size={18} />
+              <input
+                className="lead-honeypot"
+                name="website"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+              />
+              <button className="button button--primary" type="submit" disabled={sending}>
+                {sending ? 'Отправляем…' : 'Отправить обращение'} <ArrowUpRight size={18} />
               </button>
-              {draftUrl && (
+              {error && (
+                <p className="lead-error" role="alert">
+                  {error}
+                </p>
+              )}
+              {sent && (
                 <div className="lead-ready" role="status">
-                  <p>
-                    Черновик готов. Откройте его в почтовой программе и проверьте перед отправкой.
-                  </p>
-                  <a className="button button--outline" href={draftUrl}>
-                    Открыть письмо <ArrowUpRight size={17} />
-                  </a>
+                  <p>Обращение отправлено. Ответим на указанную почту.</p>
                 </div>
               )}
             </form>

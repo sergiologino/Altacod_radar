@@ -477,12 +477,9 @@ function ContactSection() {
             слишком поздно. Даже пара примеров из текущей работы поможет начать разговор.
           </p>
           <div className="contact-actions">
-            <a
-              className="button button--white"
-              href="mailto:info@altacod.com?subject=%D0%97%D0%B0%D0%B4%D0%B0%D1%87%D0%B0%20%D0%BF%D0%BE%20%D0%B0%D0%B2%D1%82%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8"
-            >
+            <Link className="button button--white" to="/contact">
               Написать о задаче <ArrowUpRight size={18} />
-            </a>
+            </Link>
             <span>Можно просто описать ситуацию своими словами</span>
           </div>
         </div>

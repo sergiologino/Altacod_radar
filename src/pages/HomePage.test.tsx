@@ -6,7 +6,7 @@ import { HomePage } from './HomePage'
 afterEach(cleanup)
 
 describe('главная страница', () => {
-  it('содержит все секции для внутренних ссылок и рабочий email-контакт', () => {
+  it('содержит все секции для внутренних ссылок и ведёт к форме обращения', () => {
     render(
       <MemoryRouter>
         <HomePage />
@@ -20,7 +20,7 @@ describe('главная страница', () => {
     }
     expect(screen.getByRole('link', { name: 'Написать о задаче' })).toHaveAttribute(
       'href',
-      expect.stringContaining('mailto:info@altacod.com'),
+      '/contact',
     )
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
       'Если сотрудники переносят данные между 1С, Excel',

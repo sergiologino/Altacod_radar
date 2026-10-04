@@ -25,7 +25,7 @@ export function parseLead(request) {
     try {
       parser = busboy({
         headers: request.headers,
-        limits: { fileSize: MAX_FILE_BYTES, files: 1, fields: 7, parts: 8, fieldSize: 4000 },
+        limits: { fileSize: MAX_FILE_BYTES, files: 1, fields: 8, parts: 9, fieldSize: 4000 },
       })
     } catch {
       reject(httpError(400, 'Ожидается форма с файлом'))
@@ -46,6 +46,11 @@ export function parseLead(request) {
       }
     })
     parser.on('file', (name, stream, info) => {
+      // Browsers include an empty file part when the optional input is untouched.
+      if (name === 'attachment' && !info.filename) {
+        stream.resume()
+        return
+      }
       if (name !== 'attachment' || !ALLOWED_TYPES.has(info.mimeType)) {
         fail(httpError(400, 'Неподдерживаемый формат файла'))
       }
