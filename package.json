@@ -8,11 +8,14 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\" vite.config.ts index.html",
-    "build": "npm run typecheck && npm run test && vite build && node scripts/generate-static-pages.mjs",
+    "test:server": "node --test server/*.test.mjs",
+    "build": "npm run typecheck && npm run test && npm run test:server && vite build && node scripts/generate-static-pages.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
+    "busboy": "^1.6.0",
     "lucide-react": "^1.51.0",
+    "nodemailer": "^10.0.14",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "react-router-dom": "^7.18.4"
