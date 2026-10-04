@@ -75,6 +75,29 @@ test('отклоняет вложение больше 10 МБ', async () => {
   assert.equal(sent.length, 2)
 })
 
+test('ограничивает заявки одного адреса, не блокируя других посетителей за общим прокси', async () => {
+  let time = 0
+  const limited = createContactServer({
+    sendMail: async () => {},
+    from: 'noreply@altacod.com', to: 'info@altacod.com',
+    now: () => time,
+  })
+  await new Promise((resolve) => limited.listen(0, '127.0.0.1', resolve))
+  const url = `http://127.0.0.1:${limited.address().port}/api/contact`
+  try {
+    for (let index = 0; index < 12; index += 1) {
+      const response = await fetch(url, { method: 'POST', body: form() })
+      assert.equal(response.status, 200)
+    }
+    assert.equal((await fetch(url, { method: 'POST', body: form() })).status, 429)
+    assert.equal((await fetch(url, { method: 'POST', body: form('other@example.com') })).status, 200)
+    time += 60 * 60 * 1000
+    assert.equal((await fetch(url, { method: 'POST', body: form() })).status, 200)
+  } finally {
+    limited.close()
+  }
+})
+
 test('не выдаёт успех при ошибке SMTP', async () => {
   const failing = createContactServer({
     sendMail: async () => { throw new Error('SMTP offline') },

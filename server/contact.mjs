@@ -136,6 +136,8 @@ export function mailTransportFromEnv(env = process.env) {
 
 export function createContactServer({ sendMail, from, to, now = () => Date.now() }) {
   const recent = new Map()
+  let windowStart = now()
+  let totalSent = 0
   return createServer(async (request, response) => {
     const respond = (status, body) => {
       response.writeHead(status, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' })
@@ -146,15 +148,23 @@ export function createContactServer({ sendMail, from, to, now = () => Date.now()
     if (request.headers.origin && request.headers.origin !== 'https://altacod.com') {
       return respond(403, { error: 'Недопустимый источник запроса' })
     }
-    const address = request.socket.remoteAddress || 'unknown'
-    const hits = (recent.get(address) || []).filter((time) => now() - time < 60 * 60 * 1000)
-    if (hits.length >= 12) return respond(429, { error: 'Слишком много обращений. Попробуйте позже.' })
     try {
       const lead = await parseLead(request)
       if (lead.website) return respond(200, { ok: true })
+      const currentTime = now()
+      if (currentTime - windowStart >= 60 * 60 * 1000) {
+        recent.clear()
+        totalSent = 0
+        windowStart = currentTime
+      }
+      const email = lead.contact.toLowerCase()
+      const sentFromEmail = recent.get(email) || 0
+      if (sentFromEmail >= 12 || totalSent >= 100) {
+        return respond(429, { error: 'Слишком много обращений. Попробуйте позже.' })
+      }
       await sendMail(messageForLead(lead, from, to))
-      hits.push(now())
-      recent.set(address, hits)
+      recent.set(email, sentFromEmail + 1)
+      totalSent += 1
       return respond(200, { ok: true })
     } catch (error) {
       if (!error.status) console.error('Не удалось отправить обращение:', error.message)
