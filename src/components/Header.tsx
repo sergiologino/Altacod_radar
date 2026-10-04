@@ -6,6 +6,7 @@ import { Logo } from './Logo'
 const links = [
   { label: 'Решения', href: '/solutions' },
   { label: 'Для бизнеса', href: '/industries' },
+  { label: 'Проекты', href: '/projects' },
   { label: '1С', href: '/1c' },
   { label: 'Как работаем', href: '/approach' },
   { label: 'Обо мне', href: '/about' },

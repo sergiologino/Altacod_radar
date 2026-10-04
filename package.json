@@ -8,7 +8,7 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\" vite.config.ts index.html",
-    "build": "npm run typecheck && npm run test && vite build",
+    "build": "npm run typecheck && npm run test && vite build && node scripts/generate-static-pages.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

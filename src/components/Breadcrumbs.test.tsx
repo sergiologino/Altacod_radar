@@ -51,4 +51,14 @@ describe('хлебные крошки', () => {
     )
     expect(screen.queryByRole('navigation', { name: 'Хлебные крошки' })).not.toBeInTheDocument()
   })
+
+  it('даёт возврат с витрины проектов на главную', () => {
+    render(
+      <MemoryRouter initialEntries={['/projects']}>
+        <Breadcrumbs />
+      </MemoryRouter>,
+    )
+    expect(screen.getByRole('link', { name: 'Главная' })).toHaveAttribute('href', '/')
+    expect(screen.getByText('Проекты')).toHaveAttribute('aria-current', 'page')
+  })
 })

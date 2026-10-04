@@ -5,6 +5,7 @@ export type Breadcrumb = { label: string; path: string }
 const standaloneLabels: Record<string, string> = {
   '/1c': 'Работа с 1С',
   '/cases': 'Примеры задач',
+  '/projects': 'Проекты',
   '/approach': 'Как работаем',
   '/about': 'Обо мне',
   '/contact': 'Контакт',

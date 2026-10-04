@@ -19,6 +19,7 @@ export function Footer() {
           <Link to="/solutions">Решения</Link>
           <Link to="/solutions/radar">Altacod Radar</Link>
           <Link to="/industries">Для бизнеса</Link>
+          <Link to="/projects">Проекты</Link>
           <Link to="/1c">Работа с 1С</Link>
           <Link to="/cases">Примеры задач</Link>
           <Link to="/approach">Как работаем</Link>
@@ -30,6 +31,9 @@ export function Footer() {
             info@altacod.com <ArrowUpRight size={15} />
           </a>
           <Link to="/contact">Показать процесс</Link>
+          <a href="https://products.altacod.com">
+            Все продукты Altacod <ArrowUpRight size={15} />
+          </a>
           <span className="footer-muted">Расскажите, что хотите улучшить.</span>
         </div>
       </div>

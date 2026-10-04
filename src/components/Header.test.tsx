@@ -23,7 +23,15 @@ describe('навигация', () => {
       'aria-expanded',
       'false',
     )
-    for (const path of ['/solutions', '/industries', '/1c', '/approach', '/about', '/contact']) {
+    for (const path of [
+      '/solutions',
+      '/industries',
+      '/projects',
+      '/1c',
+      '/approach',
+      '/about',
+      '/contact',
+    ]) {
       expect(document.querySelector(`a[href="${path}"]`)).toBeInTheDocument()
     }
   })
