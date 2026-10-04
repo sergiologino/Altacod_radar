@@ -512,6 +512,13 @@
   }
 }
 @media (max-width: 900px) {
+  .examples-layout {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .examples-section h2 {
+    max-width: none;
+  }
   .container {
     width: min(100% - 44px, 1240px);
   }
@@ -604,6 +611,9 @@
   }
 }
 @media (max-width: 700px) {
+  .examples-section {
+    padding: 65px 0 72px;
+  }
   .container {
     width: min(100% - 36px, 1240px);
   }
@@ -819,6 +829,10 @@
   }
 }
 @media (max-width: 480px) {
+  .examples-grid {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
   .container {
     width: min(100% - 32px, 1240px);
   }

@@ -47,8 +47,8 @@ function Hero() {
           </h1>
           <p className="hero-description">
             Связываем 1С с сайтом, CRM, почтой и другими рабочими системами. Где приходится делать
-            что-то руками, создаём небольшой сервис под ваш процесс. А данные помогают заметить
-            финансовый риск, пока ещё можно повлиять на решение.
+            что-то руками, создаём небольшой сервис под ваш процесс. А данные используем, чтобы
+            заранее увидеть убыточный заказ, опасную скидку или рост себестоимости.
           </p>
           <div className="hero-actions">
             <Link className="button button--primary" to="/contact">
@@ -92,8 +92,8 @@ function PainSection() {
             </h2>
           </div>
           <p>
-            Информация есть в 1С, CRM и таблицах. Сотрудникам всё равно приходится собирать её
-            руками; о рисках часто узнают с опозданием.
+            Данные уже есть в 1С, CRM и Excel, но сотрудники всё равно сводят их вручную. А проблемы
+            часто становятся заметны только после продажи, закупки или закрытия месяца.
           </p>
         </div>
         <div className="pain-grid">
@@ -154,6 +154,43 @@ function SolutionsSection() {
                 <MoveUpRight size={20} />
               </span>
             </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+const examples = [
+  {
+    title: 'Заказ из письма → в 1С',
+    text: 'Система разбирает письмо или Excel и готовит заказ без ручного переноса.',
+  },
+  {
+    title: 'Прайс поставщика → актуальные данные',
+    text: 'Загружаем цены и сопоставляем позиции с вашей номенклатурой.',
+  },
+  {
+    title: 'Скидка → проверка маржи',
+    text: 'До подтверждения заказа видно, не делает ли скидка его убыточным.',
+  },
+  {
+    title: 'CRM / сайт / 1С → единый процесс',
+    text: 'Статусы и данные переходят между системами автоматически.',
+  },
+]
+
+function ExamplesSection() {
+  return (
+    <section className="examples-section" aria-labelledby="examples-heading">
+      <div className="container examples-layout">
+        <h2 id="examples-heading">Что именно можно автоматизировать</h2>
+        <div className="examples-grid">
+          {examples.map(({ title, text }) => (
+            <article className="example-item" key={title}>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </article>
           ))}
         </div>
       </div>
@@ -488,6 +525,7 @@ export function HomePage() {
         <Hero />
         <PainSection />
         <SolutionsSection />
+        <ExamplesSection />
         <RadarSection />
         <OneCSection />
         <AISection />

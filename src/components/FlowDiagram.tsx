@@ -1,6 +1,7 @@
 import {
   ArrowDown,
   ArrowRight,
+  AlertTriangle,
   Check,
   Database,
   Mail,
@@ -13,7 +14,7 @@ export function FlowDiagram() {
   return (
     <div
       className="flow-graphic"
-      aria-label="Данные из CRM, почты и сайта поступают в сервис Altacod, который связывает их с 1С и Radar"
+      aria-label="Данные из CRM, почты и сайта поступают в сервис Altacod, который связывает их с 1С и предупреждает о падении маржи через Radar"
     >
       <div className="flow-topline">
         <span className="flow-live">
@@ -72,6 +73,10 @@ export function FlowDiagram() {
           </div>
           <span>Сигналы и риски</span>
         </div>
+      </div>
+      <div className="flow-alert">
+        <AlertTriangle size={14} aria-hidden="true" />
+        <span>Маржа заказа ниже 8%</span>
       </div>
       <div className="flow-caption">
         <span>
