@@ -1,7 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { detailPages } from './data/pages'
 import routeMeta from './data/routeMeta.json'
+import { isMetrikaHost, trackMetrikaPageView } from './lib/metrika'
 import { setPageMetadata } from './lib/seo'
 import { ContactPage } from './pages/ContactPage'
 import { HomePage } from './pages/HomePage'
@@ -20,14 +21,25 @@ const meta: Record<string, { title: string; description: string }> = routeMeta
 
 export function App() {
   const location = useLocation()
+  const lastTrackedUrl = useRef<string | null>(null)
   useEffect(() => {
     const page = meta[location.pathname] || {
       title: 'Страница не найдена | Altacod',
       description: 'Вернитесь на главную страницу Altacod.',
     }
     setPageMetadata(page.title, page.description, location.pathname, import.meta.env.VITE_SITE_URL)
+    if (isMetrikaHost(window.location.hostname)) {
+      const url = new URL(
+        `${location.pathname}${location.search}`,
+        window.location.origin,
+      ).toString()
+      if (lastTrackedUrl.current !== url) {
+        trackMetrikaPageView(url, page.title, lastTrackedUrl.current || document.referrer)
+        lastTrackedUrl.current = url
+      }
+    }
     if (!location.hash) window.scrollTo?.(0, 0)
-  }, [location.pathname, location.hash])
+  }, [location.pathname, location.search, location.hash])
 
   return (
     <Routes>
