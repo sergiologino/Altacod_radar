@@ -1,0 +1,9 @@
+node_modules/
+dist/
+coverage/
+.env.local
+.env
+.npm-cache/
+.audit/
+.docker-config/
+*.log

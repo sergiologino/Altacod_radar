@@ -1,0 +1,55 @@
+/* Small labels are part of the product story, so they must remain readable. */
+.flow-topline,
+.flow-service small,
+.flow-output > span,
+.flow-caption,
+.hero-visual-caption,
+.pain-card-top,
+.pain-card p,
+.solution-card-top,
+.solution-card p,
+.solutions-intro,
+.diagram-title,
+.diagram-core span,
+.diagram-branches span,
+.ai-art-top,
+.ai-art-bottom,
+.pipeline-step small,
+.ai-rule p,
+.process-step p,
+.ai-copy > p {
+  color: #586578;
+}
+.flow-service small,
+.ai-rule p {
+  color: #4f5f79;
+}
+.flow-topline .flow-live {
+  color: #3c7258;
+}
+.radar-toolbar-right,
+.radar-side-head > span,
+.radar-side-head p,
+.signal-count,
+.signal-item small,
+.signal-item em,
+.radar-side-foot,
+.detail-id,
+.detail-intro,
+.margin-comparison span,
+.range-labels,
+.radar-metric span {
+  color: #59677a;
+}
+.radar-demo-badge {
+  color: #50617d;
+}
+.detail-type {
+  color: #9a511e;
+}
+.radar-metric .metric-subtle {
+  color: #91501f;
+}
+.footer-heading {
+  color: #91a0b8;
+}
