@@ -57,6 +57,14 @@ test('не отправляет обращение с ошибочным адр�
   assert.equal(sent.length, 1)
 })
 
+test('отклоняет вложение больше 10 МБ', async () => {
+  const data = form()
+  data.set('attachment', new File([new Uint8Array(10 * 1024 * 1024 + 1)], 'large.pdf', { type: 'application/pdf' }))
+  const response = await fetch(`${base}/api/contact`, { method: 'POST', body: data })
+  assert.equal(response.status, 413)
+  assert.equal(sent.length, 1)
+})
+
 test('не выдаёт успех при ошибке SMTP', async () => {
   const failing = createContactServer({
     sendMail: async () => { throw new Error('SMTP offline') },
