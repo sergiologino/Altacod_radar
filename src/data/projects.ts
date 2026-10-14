@@ -6,6 +6,7 @@ export type FeaturedProject = {
   summary: string
   details: string[]
   preview: string
+  image?: string
 }
 
 export const featuredProjects: FeaturedProject[] = [
@@ -18,6 +19,7 @@ export const featuredProjects: FeaturedProject[] = [
       'Помогает представить, как одежда из карточки товара будет смотреться на человеке. В основе сценария — фотография и выбранный образ.',
     details: ['Фото и карточка товара', 'Образ для примерки', 'Работа с маркетплейсами'],
     preview: 'style',
+    image: '/images/projects/wibestyle.webp',
   },
   {
     name: 'AltaKid',
@@ -28,6 +30,7 @@ export const featuredProjects: FeaturedProject[] = [
       'Родительский контроль для семьи: экранное время, местоположение и доступность приложений собраны в одном процессе.',
     details: ['Мобильное приложение', 'Кабинет родителя', 'Семейные сценарии'],
     preview: 'kid',
+    image: '/images/projects/altakid.webp',
   },
   {
     name: 'Publisher',
@@ -48,6 +51,7 @@ export const featuredProjects: FeaturedProject[] = [
       'Календарь сезонных дел, информация о культурах и помощь по фотографии растения в приложении для дачников.',
     details: ['Календарь работ', 'Участок и культуры', 'Агроэксперт'],
     preview: 'dacha',
+    image: '/images/projects/dacha-ai.webp',
   },
   {
     name: 'Военсовет',

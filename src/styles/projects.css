@@ -45,6 +45,25 @@
   right: -95px;
   bottom: -150px;
 }
+.project-preview--image::before {
+  display: none;
+}
+.project-preview--image::after {
+  inset: auto 0 0;
+  width: 100%;
+  height: 80px;
+  border: 0;
+  border-radius: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.42));
+}
+.project-preview-image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 .project-preview--style {
   --preview-dark: #653c84;
   --preview-light: #c687aa;

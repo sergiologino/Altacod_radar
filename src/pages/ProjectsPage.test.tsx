@@ -24,5 +24,18 @@ describe('витрина проектов', () => {
     }
     expect(screen.getByText('Временно остановлен')).toBeInTheDocument()
     expect(screen.getByText('В работе')).toBeInTheDocument()
+    expect(document.querySelectorAll('.project-preview-image')).toHaveLength(3)
+    for (const project of featuredProjects) {
+      const card = cards.find((item) =>
+        within(item).queryByRole('heading', { name: project.name }),
+      )!
+      const image = card.querySelector('.project-preview-image')
+      if (project.image) {
+        expect(image).toHaveAttribute('src', project.image)
+      } else {
+        expect(image).not.toBeInTheDocument()
+        expect(card.querySelector('.project-preview-window')).toBeInTheDocument()
+      }
+    }
   })
 })

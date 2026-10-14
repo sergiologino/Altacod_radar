@@ -31,28 +31,38 @@ export function ProjectsPage() {
             {featuredProjects.map((project) => (
               <article className="project-card" key={project.slug}>
                 <div
-                  className={`project-preview project-preview--${project.preview}`}
+                  className={`project-preview project-preview--${project.preview}${project.image ? ' project-preview--image' : ''}`}
                   aria-hidden="true"
                 >
-                  <div className="project-preview-window">
-                    <div className="project-preview-bar">
-                      <span />
-                      <span />
-                      <span />
-                    </div>
-                    <div className="project-preview-content">
-                      <div className="project-preview-side" />
-                      <div className="project-preview-main">
-                        <span className="project-preview-line" />
-                        <span className="project-preview-line project-preview-line--short" />
-                        <div className="project-preview-tiles">
-                          <span />
-                          <span />
-                          <span />
+                  {project.image ? (
+                    <img
+                      className="project-preview-image"
+                      src={project.image}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    <div className="project-preview-window">
+                      <div className="project-preview-bar">
+                        <span />
+                        <span />
+                        <span />
+                      </div>
+                      <div className="project-preview-content">
+                        <div className="project-preview-side" />
+                        <div className="project-preview-main">
+                          <span className="project-preview-line" />
+                          <span className="project-preview-line project-preview-line--short" />
+                          <div className="project-preview-tiles">
+                            <span />
+                            <span />
+                            <span />
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                   <span className="project-preview-name">{project.name}</span>
                 </div>
                 <div className="project-card-body">
