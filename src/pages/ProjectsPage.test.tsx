@@ -1,10 +1,28 @@
-import { render, screen, within } from '@testing-library/react'
+import { cleanup, render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
-import { describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { featuredProjects } from '../data/projects'
 import { ProjectsPage } from './ProjectsPage'
 
 describe('витрина проектов', () => {
+  afterEach(cleanup)
+
+  beforeAll(() => {
+    HTMLDialogElement.prototype.showModal = function () {
+      this.setAttribute('open', '')
+    }
+    HTMLDialogElement.prototype.close = function () {
+      this.removeAttribute('open')
+      this.dispatchEvent(new Event('close'))
+    }
+  })
+
+  afterAll(() => {
+    delete (HTMLDialogElement.prototype as Partial<HTMLDialogElement>).showModal
+    delete (HTMLDialogElement.prototype as Partial<HTMLDialogElement>).close
+  })
+
   it('показывает выбранные владельцем проекты и ведёт к их страницам в каталоге', () => {
     render(
       <MemoryRouter initialEntries={['/projects']}>
@@ -37,5 +55,27 @@ describe('витрина проектов', () => {
         expect(card.querySelector('.project-preview-window')).toBeInTheDocument()
       }
     }
+  })
+
+  it('открывает предоставленную иллюстрацию целиком и закрывает окно', async () => {
+    const user = userEvent.setup()
+    render(
+      <MemoryRouter initialEntries={['/projects']}>
+        <ProjectsPage />
+      </MemoryRouter>,
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Открыть иллюстрацию WibeStyle' }))
+    const dialog = screen.getByRole('dialog', { name: 'Иллюстрация WibeStyle' })
+    expect(within(dialog).getByRole('img', { name: 'Иллюстрация WibeStyle' })).toHaveAttribute(
+      'src',
+      '/images/projects/wibestyle.webp',
+    )
+    await user.click(within(dialog).getByRole('button', { name: 'Закрыть иллюстрацию' }))
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+
+    expect(
+      screen.queryByRole('button', { name: 'Открыть иллюстрацию Publisher' }),
+    ).not.toBeInTheDocument()
   })
 })

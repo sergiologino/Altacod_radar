@@ -1,10 +1,19 @@
-import { ArrowUpRight } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { ArrowUpRight, X } from 'lucide-react'
 import { Breadcrumbs } from '../components/Breadcrumbs'
 import { Footer } from '../components/Footer'
 import { Header } from '../components/Header'
-import { featuredProjects, productCatalogUrl } from '../data/projects'
+import { featuredProjects, productCatalogUrl, type FeaturedProject } from '../data/projects'
 
 export function ProjectsPage() {
+  const [selectedProject, setSelectedProject] = useState<FeaturedProject | null>(null)
+  const dialogRef = useRef<HTMLDialogElement>(null)
+
+  useEffect(() => {
+    const dialog = dialogRef.current
+    if (selectedProject && dialog && !dialog.open) dialog.showModal()
+  }, [selectedProject])
+
   return (
     <>
       <a className="skip-link" href="#main">
@@ -32,16 +41,26 @@ export function ProjectsPage() {
               <article className="project-card" key={project.slug}>
                 <div
                   className={`project-preview project-preview--${project.preview}${project.image ? ' project-preview--image' : ''}`}
-                  aria-hidden="true"
+                  aria-hidden={project.image ? undefined : true}
                 >
                   {project.image ? (
-                    <img
-                      className="project-preview-image"
-                      src={project.image}
-                      alt=""
-                      loading="lazy"
-                      decoding="async"
-                    />
+                    <button
+                      className="project-preview-open"
+                      type="button"
+                      aria-label={`Открыть иллюстрацию ${project.name}`}
+                      onClick={() => setSelectedProject(project)}
+                    >
+                      <img
+                        className="project-preview-image"
+                        src={project.image}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <span className="project-preview-name" aria-hidden="true">
+                        {project.name}
+                      </span>
+                    </button>
                   ) : (
                     <div className="project-preview-window">
                       <div className="project-preview-bar">
@@ -63,7 +82,7 @@ export function ProjectsPage() {
                       </div>
                     </div>
                   )}
-                  <span className="project-preview-name">{project.name}</span>
+                  {!project.image && <span className="project-preview-name">{project.name}</span>}
                 </div>
                 <div className="project-card-body">
                   <div className="project-card-top">
@@ -87,6 +106,32 @@ export function ProjectsPage() {
         </section>
       </main>
       <Footer />
+      <dialog
+        className="project-image-dialog"
+        ref={dialogRef}
+        aria-label={selectedProject ? `Иллюстрация ${selectedProject.name}` : undefined}
+        onClose={() => setSelectedProject(null)}
+        onClick={(event) => {
+          if (event.target === event.currentTarget) event.currentTarget.close()
+        }}
+      >
+        {selectedProject?.image && (
+          <div className="project-image-dialog-content">
+            <div className="project-image-dialog-bar">
+              <span>{selectedProject.name}</span>
+              <button
+                className="project-image-dialog-close"
+                type="button"
+                aria-label="Закрыть иллюстрацию"
+                onClick={() => dialogRef.current?.close()}
+              >
+                <X size={22} aria-hidden="true" />
+              </button>
+            </div>
+            <img src={selectedProject.image} alt={`Иллюстрация ${selectedProject.name}`} />
+          </div>
+        )}
+      </dialog>
     </>
   )
 }
